@@ -1,0 +1,128 @@
+{% extends "base.html" %} {% block title %}SymCare - Buscar Medicamentos{%
+endblock %} {% block content %}
+<div class="container main-container">
+  <div class="search-container animate-fade-in">
+    <h2 class="text-center mb-4">Buscar Medicamentos</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fas fa-search"></i>
+            </span>
+          </div>
+          <input
+            type="text"
+            id="busca"
+            class="form-control search-input"
+            placeholder="Digite o nome do medicamento que você procura..."
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="resultados" class="row mt-4">
+    <!-- Os resultados serão inseridos aqui via JavaScript -->
+  </div>
+
+  <!-- Categorias populares -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <h3 class="text-center mb-4">Categorias Populares</h3>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-4">
+      <div class="menu-card animate-fade-in">
+        <i class="fas fa-pills menu-icon"></i>
+        <h4>Analgésicos</h4>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-4">
+      <div class="menu-card animate-fade-in">
+        <i class="fas fa-virus-slash menu-icon"></i>
+        <h4>Antigripais</h4>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-4">
+      <div class="menu-card animate-fade-in">
+        <i class="fas fa-band-aid menu-icon"></i>
+        <h4>Anti-inflamatórios</h4>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-4">
+      <div class="menu-card animate-fade-in">
+        <i class="fas fa-heartbeat menu-icon"></i>
+        <h4>Vitaminas</h4>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Adiciona Font Awesome -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+/>
+
+<script>
+  document.getElementById("busca").addEventListener("input", function (e) {
+    const termo = e.target.value;
+    if (termo.length >= 2) {
+      fetch(`/api/buscar?termo=${encodeURIComponent(termo)}`)
+        .then((response) => response.json())
+        .then((data) => {
+          const resultadosDiv = document.getElementById("resultados");
+          resultadosDiv.innerHTML = "";
+
+          if (data.length === 0) {
+            resultadosDiv.innerHTML = `
+                        <div class="col-12 text-center mt-4">
+                            <div class="alert alert-info">
+                                Nenhum medicamento encontrado para "${termo}"
+                            </div>
+                        </div>
+                    `;
+            return;
+          }
+
+          data.forEach((med) => {
+            const card = `
+                        <div class="col-md-4 mb-4 animate-fade-in">
+                            <div class="medication-card">
+                                <img src="https://via.placeholder.com/300x200?text=${encodeURIComponent(
+                                  med.nome
+                                )}" 
+                                     class="medication-image" alt="${med.nome}">
+                                <div class="medication-info">
+                                    <h5 class="medication-name">${med.nome}</h5>
+                                    <p class="medication-price">R$ ${med.preco.toFixed(
+                                      2
+                                    )}</p>
+                                    <a href="/pagamento?medicamento=${encodeURIComponent(
+                                      med.nome
+                                    )}" 
+                                       class="btn btn-custom btn-block">Comprar</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            resultadosDiv.innerHTML += card;
+          });
+        });
+    } else {
+      document.getElementById("resultados").innerHTML = "";
+    }
+  });
+
+  // Animação de entrada para os cards
+  document.addEventListener("DOMContentLoaded", function () {
+    const cards = document.querySelectorAll(".animate-fade-in");
+    cards.forEach((card, index) => {
+      setTimeout(() => {
+        card.style.opacity = "1";
+        card.style.transform = "translateY(0)";
+      }, index * 100);
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %} {% block title %}SymCare - Recomendações{% endblock %}
+{% block content %} {% if sintoma %}
+<h2>Recomendações para: {{ sintoma }}</h2>
+<div class="row">
+  {% for medicamento in medicamentos %}
+  <div class="col-md-4 mb-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{ medicamento.nome }}</h5>
+        <p class="card-text">
+          Preço: R$ {{ "%.2f"|format(medicamento.preco) }}
+        </p>
+        <a
+          href="/pagamento?medicamento={{ medicamento.nome|urlencode }}"
+          class="btn btn-primary"
+          >Comprar</a
+        >
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<h2>Recomendações por Sintoma</h2>
+<div class="row">
+  <div class="col-md-6">
+    <form action="/recomendacao" method="get">
+      <div class="form-group">
+        <label for="sintoma">Selecione seu sintoma:</label>
+        <select name="sintoma" id="sintoma" class="form-control">
+          <option value="">Escolha um sintoma</option>
+          {% for sintoma in sintomas %}
+          <option value="{{ sintoma }}">{{ sintoma }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        Buscar Recomendações
+      </button>
+    </form>
+  </div>
+</div>
+{% endif %} {% endblock %}

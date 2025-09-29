@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}SymCare - Sua Farmácia Online{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <i class="fas fa-clinic-medical"></i> SymCare
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="fas fa-home"></i> Início
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/buscar">
+                <i class="fas fa-search"></i> Buscar
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/recomendacao">
+                <i class="fas fa-heartbeat"></i> Recomendações
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <footer class="bg-light py-4 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h5>SymCare - Sua Farmácia Online</h5>
+            <p>
+              Autoatendimento rápido e seguro para suas necessidades
+              farmacêuticas.
+            </p>
+          </div>
+          <div class="col-md-6 text-md-right">
+            <h5>Contato</h5>
+            <p>
+              <i class="fas fa-phone"></i> (11) 1234-5678<br />
+              <i class="fas fa-envelope"></i> contato@symcare.com
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" style="display: none">
+      <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Carregando...</span>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      // Função para mostrar/esconder o overlay de carregamento
+      function toggleLoading(show) {
+        document.getElementById("loading-overlay").style.display = show
+          ? "flex"
+          : "none";
+      }
+
+      // Adicionar efeito de hover nos links do navbar
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("mouseenter", function () {
+          this.style.transform = "translateY(-2px)";
+        });
+        link.addEventListener("mouseleave", function () {
+          this.style.transform = "translateY(0)";
+        });
+      });
+    </script>
+  </body>
+</html>

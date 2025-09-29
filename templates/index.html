@@ -1,0 +1,141 @@
+{% extends "base.html" %} {% block title %}SymCare - Autoatendimento{% endblock
+%} {% block content %}
+<div class="container main-container">
+  <div class="text-center mb-5">
+    <h1 class="display-4">Bem-vindo ao SymCare</h1>
+    <p class="lead">Seu terminal de autoatendimento farmacêutico</p>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-4">
+      <div
+        class="menu-card animate-fade-in"
+        onclick="window.location.href='/recomendacao'"
+      >
+        <div class="menu-icon">
+          <i class="fas fa-heartbeat"></i>
+        </div>
+        <h3 class="menu-title">Consulta por Sintomas</h3>
+        <p class="menu-description">
+          Descreva seus sintomas e receba recomendações personalizadas
+        </p>
+        <a href="/recomendacao" class="btn btn-custom">Iniciar Consulta</a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div
+        class="menu-card animate-fade-in"
+        onclick="window.location.href='/buscar'"
+      >
+        <div class="menu-icon">
+          <i class="fas fa-search"></i>
+        </div>
+        <h3 class="menu-title">Buscar Medicamentos</h3>
+        <p class="menu-description">
+          Pesquise por nome ou categoria de medicamentos
+        </p>
+        <a href="/buscar" class="btn btn-custom">Buscar Agora</a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="menu-card animate-fade-in">
+        <div class="menu-icon">
+          <i class="fas fa-star"></i>
+        </div>
+        <h3 class="menu-title">Ofertas do Dia</h3>
+        <p class="menu-description">
+          Confira nossos medicamentos com descontos especiais
+        </p>
+        <button class="btn btn-custom" onclick="showOffers()">
+          Ver Ofertas
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seção de Sintomas Comuns -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <h2 class="text-center mb-4">Sintomas Comuns</h2>
+    </div>
+    {% for sintoma in sintomas %}
+    <div class="col-md-3 col-sm-6 mb-4">
+      <div class="menu-card animate-fade-in" style="min-height: 120px">
+        <h4>{{ sintoma }}</h4>
+        <a
+          href="/recomendacao?sintoma={{ sintoma|urlencode }}"
+          class="btn btn-custom btn-sm"
+          >Ver Tratamentos</a
+        >
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Modal de Ofertas -->
+<div class="modal fade" id="offersModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ofertas do Dia</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <div class="medication-card">
+              <img
+                src="https://via.placeholder.com/300x200?text=Medicamento"
+                class="medication-image"
+                alt="Medicamento"
+              />
+              <div class="medication-info">
+                <h5 class="medication-name">Paracetamol</h5>
+                <p class="medication-price">
+                  <strike>R$ 15,90</strike>
+                  <br />
+                  <span class="text-success">R$ 12,90</span>
+                </p>
+                <a
+                  href="/pagamento?medicamento=Paracetamol"
+                  class="btn btn-custom btn-block"
+                  >Comprar</a
+                >
+              </div>
+            </div>
+          </div>
+          <!-- Adicione mais ofertas aqui -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Adiciona Font Awesome -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+/>
+
+<script>
+  function showOffers() {
+    $("#offersModal").modal("show");
+  }
+
+  // Adiciona animação aos cards quando a página carrega
+  document.addEventListener("DOMContentLoaded", function () {
+    const cards = document.querySelectorAll(".animate-fade-in");
+    cards.forEach((card, index) => {
+      setTimeout(() => {
+        card.style.opacity = "1";
+        card.style.transform = "translateY(0)";
+      }, index * 100);
+    });
+  });
+</script>
+{% endblock %}
