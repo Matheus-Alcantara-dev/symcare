@@ -1,43 +1,147 @@
-{% extends "base.html" %} {% block title %}SymCare - Recomendações{% endblock %}
-{% block content %} {% if sintoma %}
-<h2>Recomendações para: {{ sintoma }}</h2>
-<div class="row">
-  {% for medicamento in medicamentos %}
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">{{ medicamento.nome }}</h5>
-        <p class="card-text">
-          Preço: R$ {{ "%.2f"|format(medicamento.preco) }}
-        </p>
-        <a
-          href="/pagamento?medicamento={{ medicamento.nome|urlencode }}"
-          class="btn btn-primary"
-          >Comprar</a
-        >
-      </div>
-    </div>
-  </div>
-  {% endfor %}
+{% extends "base.html" %}
+
+{% block title %}SymCare - Recomendações{% endblock %}
+
+{% block content %}
+<div class="container main-container">
+    {% if sintoma %}
+        <div class="search-container animate-fade-in mb-4">
+            <div class="d-flex align-items-center mb-4">
+                <a href="/recomendacao" class="btn btn-outline-primary mr-3">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+                <h2 class="mb-0">Recomendações para: {{ sintoma }}</h2>
+            </div>
+            
+            <div class="row">
+                {% for medicamento in medicamentos %}
+                <div class="col-md-4 mb-4">
+                    <div class="medication-card animate-fade-in">
+                        <div class="medication-image-container">
+                            <img src="https://via.placeholder.com/400x300?text=Medicamento" 
+                                 class="medication-image" alt="{{ medicamento.nome }}">
+                            {% if loop.index == 1 %}
+                            <div class="recommendation-badge">
+                                <i class="fas fa-star"></i> Mais Recomendado
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="medication-info">
+                            <h5 class="medication-name">{{ medicamento.nome }}</h5>
+                            <div class="medication-details">
+                                <p class="mb-2"><i class="fas fa-check-circle text-success"></i> Indicado para {{ sintoma }}</p>
+                                <p class="medication-price">R$ {{ "%.2f"|format(medicamento.preco) }}</p>
+                            </div>
+                            <a href="/pagamento?medicamento={{ medicamento.nome|urlencode }}" 
+                               class="btn btn-custom btn-block">
+                               <i class="fas fa-shopping-cart"></i> Comprar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="text-center mb-5">
+            <h1 class="display-4">Recomendações por Sintoma</h1>
+            <p class="lead">Selecione seus sintomas e receba recomendações personalizadas de medicamentos</p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="search-container animate-fade-in">
+                    <form action="/recomendacao" method="get" class="symptom-form">
+                        <div class="form-group">
+                            <label for="sintoma" class="h5 mb-3">Selecione seu sintoma:</label>
+                            <select name="sintoma" id="sintoma" class="form-control form-control-lg">
+                                <option value="">Escolha um sintoma</option>
+                                {% for sintoma in sintomas %}
+                                <option value="{{ sintoma }}">{{ sintoma }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-custom btn-lg btn-block mt-4">
+                            <i class="fas fa-search"></i> Buscar Recomendações
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="text-center mb-4">Sintomas Comuns</h3>
+            </div>
+            {% for sintoma in sintomas %}
+            <div class="col-md-4 col-sm-6 mb-4">
+                <a href="/recomendacao?sintoma={{ sintoma|urlencode }}" class="text-decoration-none">
+                    <div class="menu-card animate-fade-in" style="min-height: 120px;">
+                        <div class="menu-icon">
+                            {% if sintoma == "Dor de cabeça" %}
+                                <i class="fas fa-head-side-virus"></i>
+                            {% elif sintoma == "Febre" %}
+                                <i class="fas fa-thermometer-three-quarters"></i>
+                            {% elif sintoma == "Tosse" %}
+                                <i class="fas fa-head-side-cough"></i>
+                            {% elif sintoma == "Dor muscular" %}
+                                <i class="fas fa-bone"></i>
+                            {% elif sintoma == "Gripe" %}
+                                <i class="fas fa-virus"></i>
+                            {% else %}
+                                <i class="fas fa-notes-medical"></i>
+                            {% endif %}
+                        </div>
+                        <h4 class="menu-title">{{ sintoma }}</h4>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
-{% else %}
-<h2>Recomendações por Sintoma</h2>
-<div class="row">
-  <div class="col-md-6">
-    <form action="/recomendacao" method="get">
-      <div class="form-group">
-        <label for="sintoma">Selecione seu sintoma:</label>
-        <select name="sintoma" id="sintoma" class="form-control">
-          <option value="">Escolha um sintoma</option>
-          {% for sintoma in sintomas %}
-          <option value="{{ sintoma }}">{{ sintoma }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary">
-        Buscar Recomendações
-      </button>
-    </form>
-  </div>
-</div>
-{% endif %} {% endblock %}
+
+<style>
+    .symptom-form {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .recommendation-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: linear-gradient(135deg, #ffd700, #ffa500);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: bold;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .medication-image-container {
+        position: relative;
+    }
+
+    .medication-details {
+        padding: 1rem 0;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        margin: 1rem 0;
+    }
+
+    select.form-control-lg {
+        height: 60px;
+        border-radius: 30px;
+        padding: 0 1.5rem;
+        font-size: 1.1rem;
+        border: 2px solid #eee;
+        transition: all 0.3s ease;
+    }
+
+    select.form-control-lg:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(0,136,204,0.25);
+    }
+</style>
+{% endblock %}
