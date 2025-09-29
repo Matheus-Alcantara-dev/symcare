@@ -40,5 +40,9 @@ def pagamento():
                              preco=preco)
     return render_template('pagamento.html')
 
+# Configuração para o Vercel
+app.config['STATIC_FOLDER'] = 'static'
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+
 if __name__ == '__main__':
     app.run()
